@@ -589,6 +589,8 @@ class GaussianDiffusion:
 
                         sample_idxs[t_cur] += 1
 
+                        lr_xt *= self.lr_xt_decay
+                        coef_xt_reg *= self.coef_xt_reg_decay
                         yield out
 
                 else:
@@ -599,6 +601,8 @@ class GaussianDiffusion:
                         image_before_step, image_after_step,
                         est_x_0=out['pred_xstart'], t=t_last_t+t_shift, debug=False)
                     pred_xstart = out["pred_xstart"]
+                    lr_xt /= self.lr_xt_decay
+                    coef_xt_reg /= self.coef_xt_reg_decay
 
 def _extract_into_tensor(arr, timesteps, broadcast_shape):
     """
