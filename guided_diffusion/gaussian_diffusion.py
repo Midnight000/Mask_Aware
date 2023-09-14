@@ -369,15 +369,14 @@ class GaussianDiffusion:
                 x0 = model_kwargs["gt"]
                 origin_x = x.clone().detach()
                 x = x.detach().requires_grad_()
-                pred_x0 = grad_ckpt(
-                    self.p_mean_variance, model,
+                pred_x0 = self.p_mean_variance(
+                    model,
                     x,
                     t,
-                    clip_denoised,
-                    denoised_fn,
-                    model_kwargs,
-                    True,
-                    use_reentrant=False
+                    clip_denoised=clip_denoised,
+                    denoised_fn=denoised_fn,
+                    model_kwargs=model_kwargs,
+                    pred_only=True,
                 )["pred_xstart"]
                 mask = model_kwargs.get('gt_keep_mask')
                 # prev_loss = loss_fn(x0, pred_x0, mask).item()
@@ -391,15 +390,14 @@ class GaussianDiffusion:
                     print('sssss')
                     new_x = x - lr_xt * x_grad
                     x = new_x.detach().requires_grad_()
-                    pred_x0 = grad_ckpt(
-                        self.p_mean_variance, model,
+                    pred_x0 = self.p_mean_variance(
+                        model,
                         x,
                         t,
-                        clip_denoised,
-                        denoised_fn,
-                        model_kwargs,
-                        True,
-                        use_reentrant=False
+                        clip_denoised = clip_denoised,
+                        denoised_fn = denoised_fn,
+                        model_kwargs = model_kwargs,
+                        pred_only = True,
                     )["pred_xstart"]
                     del loss, x_grad
                     th.cuda.empty_cache()
